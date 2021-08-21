@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Qing Li Portfolio
 
 You can use the [editor on GitHub](https://github.com/loliamserious/Qing_Portfolio/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
@@ -11,27 +11,20 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 ```markdown
 Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
 **Bold** and _Italic_ and `Code` text
 
 [Link](url) and ![Image](src)
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+# Project 1: Indian Housing Price Analysis and Prediction
+* Analyzed 29451 lines of data and 12 influencing factors of Indian housing prices to help understand buyer behaviors through exploratory data analysis (EDA)
+* Forecasted Indian housing price with 0.05 RMSE and 64.3% R2 through implementation of random forest regressor and gradient-boosted regressor
+* Extracted meaningful information from data through visualization of distribution and calculation of correlation using python, PySpark and pandas 
+* Engineered features put on knowing inter-quartile range (IQR), PySpark, transformation, normalization, encoding and sklearn
+* Optimized random forest regression and gradient-boosted regression model using GridsearchCV to reach the final result
+
 
 ### Jekyll Themes
 
 Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/loliamserious/Qing_Portfolio/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.

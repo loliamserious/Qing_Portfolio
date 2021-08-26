@@ -16,11 +16,11 @@
 </p>
 
 ## [Project 2: Plant External Structure Classification System Based on CNN](https://github.com/loliamserious/ML-project)
-This project is mainly based on finetune VGG-16 network to train the models to extract and learn features of different types of plant structures, so that we can find the appropriate spatial classification boundaries and place different types of samples in their respective regions.
+This project is mainly based on finetune VGG-16 network to train the models to extract and learn features of different types of plant structures.
 
 * For the data preprocessing, I first divide the dataset into five categories, then scale the image into 100*100, and solve the problem of imbalance data by assigning different penalty weight to different categories. 
 * And then I used VGG-16 with fine-tune as our training model, and combined with K-fold cross validation to further improve the prediction accuracy of the model. Finally, this model reachs the accuracy of 83.44% and the loss of 7.53% in epoch 20(Figure 2). 
-* I also developed a client facing API for this model which shows the high prediction accuracy after inputting untrained plant images. For example,if we input something like the flower on the left in Figure 3. After the calculation of the model, a set of predicted values will be obtained, the classification with the largest predicted value is the final result.
+* I also developed a client facing API for this model which shows the high prediction accuracy after inputting untrained plant images. If we input something like the flower on the left in Figure 3, a set of predicted values will be obtained, the classification with the largest predicted value is the final result.
 <div align="center"><img src="img/Picture3.png" width="50%" height="50%"></div>
 <p align="center">
    Figure 2.

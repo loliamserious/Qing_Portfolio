@@ -13,9 +13,9 @@ Technical details:
 * Built our backend server with SpringBoot framework, with JavaScript and BootStrap for frontend, GitHub as version control system, MySQL as database, JIRA as PMT.
 
 <div align="center">
-  <img src="img/jaweb1.png" width="50%" height="50%">
-  <img src="img/jaweb2.png" width="50%" height="50%">
-  <img src="img/jaweb3.png" width="50%" height="50%">
+  <img src="img/jaweb1.png" width="100%" height="100%">
+  <img src="img/jaweb2.png" width="100%" height="100%">
+  <img src="img/jaweb3.png" width="100%" height="100%">
 </div>
 
 
@@ -52,8 +52,7 @@ This project is mainly based on finetune VGG-16 network to train the models to e
 * And then I used VGG-16 with fine-tune as our training model, and combined with K-fold cross validation to further improve the prediction accuracy of the model. Finally, this model reachs the accuracy of 83.44% and the loss of 7.53% in epoch 20. 
 * I also developed a client facing API for this model which shows the high prediction accuracy after inputting untrained plant images. If we input something like the flower on the left, a set of predicted values will be obtained, the classification with the largest predicted value is the final result.
 
-<div align="center"><img src="img/Picture3.png" width="50%" height="50%"></div>
-<div align="center"><img src="img/Picture1.png" width="20%" height="20%"><img src="img/Picture2.png" width="20%" height="20%"></div>
+<div align="center"><img src="img/Picture3.png" width="50%" height="50%"><img src="img/Picture1.png" width="20%" height="20%"><img src="img/Picture2.png" width="30%" height="30%"></div>
 
 
 

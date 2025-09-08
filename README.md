@@ -17,3 +17,5 @@ Security: bcrypt password hashing + JWT authentication.
 Deployment: Cost-efficient cloud hosting on Railway (backend + DB) and Vercel (frontend).
 
 Repos: [UI](https://github.com/loliamserious/LuckyCityUI) [Backend](https://github.com/loliamserious/LuckyCityAPI)
+
+Live Web: https://lucky-city-ui.vercel.app/

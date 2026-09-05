@@ -60,7 +60,8 @@ h1{
   letter-spacing:-.01em;
   color:var(--text);
 }
-.tagline{color:var(--text-dim);font-size:19px;max-width:640px;margin:0 0 22px;}
+.tagline{color:var(--text-dim);font-size:19px;max-width:100%;margin:0 0 22px;}
+.lede{color:var(--text-faint);font-size:15.5px;line-height:1.65;max-width:100%;margin:0 0 22px;}
 .links{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;}
 .links a{text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:3px;}
 .links a:hover{text-decoration-color:currentColor;}

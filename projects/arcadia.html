@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Arcadia — Qing Li</title>
+<meta name="description" content="Arcadia: a real-time AI avatar companion platform — mobile client, backend orchestration, and a 5-GPU distributed video generation service, built end to end." />
+<link rel="icon" href="../assets/icons/arcadia-icon-64.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" />
+<link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back-link" href="../index.html">← All projects</a>
+
+  <header class="hero">
+    <p class="eyebrow">Project</p>
+    <div class="title-row">
+      <div class="app-icon"><img src="../assets/icons/arcadia-icon-256.png" alt="Arcadia app icon" /></div>
+      <h1>Arcadia</h1>
+    </div>
+    <p class="tagline">A real-time AI avatar companion platform — mobile client, backend orchestration, and a 5-GPU distributed video generation service, built end to end.</p>
+    <p style="color:var(--text-dim)">Users train an avatar on their own chat history, photos, and voice. Other users then talk to that avatar by text, voice message, or live video call — where the avatar responds with generated video, not a lip-synced still image.</p>
+    <div class="links">
+      <a href="https://nythelabs.com">nythelabs.com</a>
+    </div>
+    <p class="note">Source is a private repository. Happy to walk through the code or architecture in an interview.</p>
+  </header>
+
+  <section id="screenshots">
+    <h2>Product</h2>
+    <div class="shot-grid">
+      <img src="../assets/arcadia/product-1.jpg" alt="Arcadia avatar creation flow: portrait upload and voice selection" />
+      <img src="../assets/arcadia/product-2.jpg" alt="Arcadia live video call screen with an AI persona" />
+    </div>
+  </section>
+
+  <section id="demo">
+    <h2>Demo</h2>
+    <div class="video-grid">
+      <figure>
+        <div class="video-box">
+          <video src="../assets/arcadia/demo-1.mp4" poster="../assets/arcadia/demo-1-poster.jpg" controls muted playsinline preload="metadata"></video>
+        </div>
+      </figure>
+      <figure>
+        <div class="video-box">
+          <video src="../assets/arcadia/demo-2.mp4" poster="../assets/arcadia/demo-2-poster.jpg" controls muted playsinline preload="metadata"></video>
+        </div>
+      </figure>
+    </div>
+    <figcaption>A live call: the user speaks, and the avatar responds with generated video — new frames for every reply, with expression and gesture chosen by the model to match what it's saying.</figcaption>
+  </section>
+
+  <section id="why">
+    <h2>Why this was hard</h2>
+    <p>The interesting constraint is the live call. When a user speaks, the system has ~3 seconds to transcribe speech, moderate it, retrieve memory, generate a reply, synthesize a voice, <strong>and render a video of the avatar saying it</strong> — then stream that video into a WebRTC room that's already open.</p>
+    <p>That last step runs on five GPUs in parallel, in a single distributed inference session, streaming frames rather than writing a file. Most of the engineering below exists because of that constraint.</p>
+
+    <figure class="diagram-figure">
+      <svg viewBox="0 0 640 420" role="img" aria-label="A user's phone connects over a LiveKit WebRTC room to a Python worker, which runs STT, moderation, retrieval and reply generation, then dispatches a render job to a 5-GPU RunPod service where a GPU process and a companion process exchange frames over IPC before the companion publishes video back into the same call.">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor" opacity=".6"/>
+          </marker>
+          <marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <!-- client -->
+        <rect class="box" x="170" y="10" width="300" height="46" rx="8"/>
+        <text x="320" y="38" text-anchor="middle" font-size="13">iOS / Android (React Native)</text>
+
+        <!-- arrow: client -> worker -->
+        <line class="flow-line" x1="320" y1="56" x2="320" y2="98" marker-end="url(#arrow)"/>
+        <text class="label" x="336" y="81" font-size="11">LiveKit WebRTC room</text>
+
+        <!-- worker -->
+        <rect class="box" x="90" y="100" width="460" height="90" rx="8"/>
+        <text x="320" y="126" text-anchor="middle" font-size="13" font-weight="600">LiveKit Agents worker (Python)</text>
+        <text x="320" y="150" text-anchor="middle" font-size="11.5" opacity=".85">Deepgram STT → moderation → RAG (pgvector)</text>
+        <text x="320" y="170" text-anchor="middle" font-size="11.5" opacity=".85">→ Gemini reply → Cartesia TTS</text>
+
+        <!-- arrow: worker -> gpu -->
+        <line class="flow-line" x1="320" y1="190" x2="320" y2="232" marker-end="url(#arrow)"/>
+        <text class="label" x="336" y="215" font-size="11">dispatch render job</text>
+
+        <!-- gpu outer -->
+        <rect class="box" x="50" y="234" width="540" height="176" rx="8"/>
+        <text x="320" y="258" text-anchor="middle" font-size="13" font-weight="600">RunPod Serverless — 5× H200 SXM</text>
+        <text x="320" y="278" text-anchor="middle" font-size="11" opacity=".7">Wan2.2-S2V + TPP distributed inference</text>
+
+        <!-- sub-box A: gpu process -->
+        <rect class="box accent" x="70" y="296" width="220" height="96" rx="8"/>
+        <text x="180" y="338" text-anchor="middle" font-size="12">GPU process</text>
+        <text x="180" y="358" text-anchor="middle" font-size="11" opacity=".8">(torch.distributed / NCCL)</text>
+
+        <!-- sub-box B: companion process -->
+        <rect class="box accent" x="350" y="296" width="220" height="96" rx="8"/>
+        <text x="460" y="332" text-anchor="middle" font-size="12">companion process</text>
+        <text x="460" y="352" text-anchor="middle" font-size="11" opacity=".8">→ publishes tracks</text>
+        <text x="460" y="370" text-anchor="middle" font-size="11" opacity=".8">back into the LiveKit room</text>
+
+        <!-- IPC connector -->
+        <line class="flow-line accent" x1="292" y1="344" x2="348" y2="344" marker-end="url(#arrow-accent)" marker-start="url(#arrow-accent)"/>
+        <text x="320" y="330" text-anchor="middle" font-size="10" font-weight="600">IPC</text>
+        <text class="label" x="320" y="366" text-anchor="middle" font-size="9">socket +</text>
+        <text class="label" x="320" y="378" text-anchor="middle" font-size="9">locked file</text>
+      </svg>
+      <figcaption>Client to worker to GPU service: the worker dispatches a render job, and inside the 5-GPU service the inference process and the LiveKit-publishing process trade frames and prompt updates over a Unix socket and a lock-protected shared state file.</figcaption>
+    </figure>
+  </section>
+
+  <section id="video-gen">
+    <h2>1. Real-time video generation on 5 GPUs</h2>
+    <p>Built the production real-time communication system around an open-source inference engine (see <a href="#attribution">Attribution</a>): the LiveKit integration, cross-process IPC, concurrency safety, and observability that turn a research inference framework into something that survives production traffic.</p>
+
+    <h3>Architecture</h3>
+    <ul>
+      <li>A GPU process running 5-rank tensor/pipeline-parallel inference, and a separate companion process owning the LiveKit room connection and track publishing</li>
+      <li>IPC between them: a Unix domain socket for video frame transport, plus a lock-protected shared state file for audio-clip and prompt-update coordination</li>
+      <li>Real-time ingestion of TTS audio (LiveKit byte-stream) and dynamic expression/motion prompt updates from the backend, synchronized against the clip currently being generated</li>
+    </ul>
+
+    <p><strong>Performance</strong> — Validated and locked in an FP8 quantization + <code>torch.compile</code> configuration, and evaluated H100 vs. H200. Production runs on H200 SXM at <strong>~2.8s per clip</strong>, down from a ~3.70s unoptimized baseline (~24% faster), and ~8% faster than the same configuration on H100 (~3.1s).</p>
+
+    <h3>Three production bugs worth reading about</h3>
+    <p><strong>NCCL collective-op deadlock, fixed at the architectural level.</strong> In a 5-rank distributed loop, every rank must call <code>dist.broadcast_object_list</code> the same number of times in the same order, every iteration. A rank-0-only decision placed inside a conditional branch means four ranks block forever waiting for a broadcast that never comes. This class of bug recurred three separate times before I stopped patching instances and fixed the pattern: all rank-0 decisions moved unconditionally to the top of every loop iteration.</p>
+    <p><strong>Cross-process race on a shared state file.</strong> Unlocked read-modify-write access let an already-consumed audio queue entry reappear after deletion, crashing the session with an unhandled <code>FileNotFoundError</code>. Fixed with POSIX file locking and validated under a 200-operation concurrent stress test: <strong>200/200 correct with locking; 178 lost updates and 181 "zombie" entries reproduced without it.</strong></p>
+    <p><strong>Subprocess pipe deadlock.</strong> An FFmpeg call drained <code>stdout</code> but never <code>stderr</code>. Under load, the subprocess blocked writing to a full stderr pipe while the caller blocked reading stdout — a circular wait. Resolved with <code>subprocess.communicate()</code>, which the standard library documents specifically to avoid this.</p>
+
+    <p><strong>Observability</strong> — Layered diagnostic logging across the full audio/video path (byte-stream receipt, disk I/O, audio slicing, cross-process transport, inference entry), plus a <code>faulthandler</code> hook that dumps a full stack trace automatically when a call hangs. In a 5-process, 5-GPU system, this is the difference between a one-hour diagnosis and a one-day one.</p>
+
+    <p class="note">Also fixed: a silent-audio bug where TTS output at 24 kHz was fed to a LiveKit <code>AudioSource</code> fixed at 16 kHz. It only manifested on real speech clips — idle silence happened to already match the fixed rate, so the failure was invisible until someone actually talked.</p>
+  </section>
+
+  <section id="backend">
+    <h2>2. Backend — Python / FastAPI</h2>
+    <p><strong>Avatar creation pipeline.</strong> Selfie face verification (ONNX face-recognition model, cosine similarity, <strong>in-memory only — no biometric data persisted</strong>) → GPT-image-2 portrait stylization → Gemini Omni Flash image-to-video preview → Cartesia voice cloning. Chained as background tasks with independent status tracking the client polls.</p>
+    <p><strong>Live-call orchestration.</strong> A LiveKit Agents worker running as a separate long-lived process with graceful drain-on-shutdown, so deploys don't drop calls in progress. Per turn: Deepgram STT → moderation → concurrent RAG lookups → Gemini reply → Cartesia TTS → GPU render dispatch.</p>
+    <p><strong>Memory with hard isolation.</strong> Three distinct pgvector-backed scopes — per-avatar personality, per-subscriber-pair long-term memory, and per-conversation short-term context — with enforced data isolation so one subscriber's conversation can never surface in another's.</p>
+    <p><strong>A real computer-vision heuristic, not an API call.</strong> Personality training ingests chat screenshots via OCR. Attributing bubbles to the right speaker is the hard part: a two-pass geometric algorithm infers sender vs. recipient from bubble geometry across messaging-app layouts.</p>
+    <p><strong>Calibrated token economy.</strong> Pricing derived from measured RunPod per-second GPU cost, target margin, creator revenue share, and a 14-day earnings hold matched to the IAP refund window — unit economics worked out from real numbers, not placeholders.</p>
+    <p><strong>Trust &amp; safety.</strong> OpenAI moderation on every turn pre-LLM, a second moderation pass on generated action descriptions before they reach the video pipeline, mutual-exclusion blocking (not merely muting), and a manual-review reporting flow.</p>
+    <p><strong>Model migration under a safety block.</strong> Moved a production integration from Google Veo to Gemini's Omni Flash (Interactions API), including diagnosing a content-safety block and resolving it by iterating on both the stylization and video-generation prompts.</p>
+  </section>
+
+  <section id="mobile">
+    <h2>3. Mobile — React Native / Expo</h2>
+    <p>21 screens: auth, a paginated discovery feed with autoplaying preview video, real-time text and voice chat, live calls, the full avatar-creation flow (selfie capture, biometric consent, voice cloning, training-source upload), in-app purchases, and a creator earnings/payout dashboard.</p>
+    <p><strong>Live call client.</strong> LiveKit room lifecycle, mic publish/mute gating tied to server-side "avatar is live" signaling, and a background-call kill switch: an <code>AppState</code> listener that tears down the call and navigates out when the app backgrounds — because the app deliberately does <em>not</em> declare <code>UIBackgroundModes</code>.</p>
+    <p><strong>Server-authoritative IAP.</strong> RevenueCat purchases never credit the wallet client-side. The client only re-fetches wallet state after a webhook has been processed, closing a common IAP fraud gap.</p>
+    <p><strong>Compliance engineering.</strong> Age gating built on Apple's Declared Age Range API and Google Play Age Signals API, with conclusive-signal override logic.</p>
+    <p><strong>Native config debugging.</strong> Diagnosed an unintended <code>UIBackgroundModes</code> entry and an Android foreground-service permission leaking in from a third-party Expo config plugin's defaults — the kind of thing that only surfaces in a store review rejection.</p>
+  </section>
+
+  <section id="attribution">
+    <h2>Attribution</h2>
+    <p>The generation model (<strong>Wan2.2-S2V-14B</strong>) and its distributed inference framework — Timestep-forcing Pipeline Parallelism, the distilled 4-step LoRA, and block-wise autoregressive streaming — come from the open-source <a href="https://github.com/Alibaba-Quark/LiveAvatar">LiveAvatar</a> project by the Alibaba Quark team. I did not train or design them.</p>
+    <p>What I built is the production real-time communication system around that inference engine: the LiveKit integration, cross-process IPC, concurrency safety, observability, and the reliability work needed to keep a 5-GPU, multi-process distributed session alive under real traffic.</p>
+  </section>
+
+  <section id="stack">
+    <h2>Stack</h2>
+    <p class="stack-row"><b>Mobile</b> — React Native 0.86, React 19, Expo SDK 57, TypeScript, NativeWind, React Navigation, Reanimated 4, LiveKit RN SDK + WebRTC, RevenueCat, Supabase JS</p>
+    <p class="stack-row"><b>Backend</b> — Python, FastAPI, Pydantic Settings, Supabase (Postgres + pgvector + Auth + Storage), LiveKit Agents, sentence-transformers, InsightFace (ONNX), Stripe Connect, RevenueCat webhooks, Railway</p>
+    <p class="stack-row"><b>AI services</b> — OpenAI (moderation, transcription, image), Google Gemini (reply generation, Omni Flash video, Cloud Vision OCR), Deepgram (streaming STT), Cartesia (voice cloning + TTS)</p>
+    <p class="stack-row"><b>GPU infra</b> — RunPod Serverless (H200 SXM), PyTorch, torch.distributed / NCCL, FP8 quantization, torch.compile, Bazel, Docker, FFmpeg, asyncio</p>
+  </section>
+
+  <section id="demonstrates">
+    <h2>What this project demonstrates</h2>
+    <p>Full-stack ownership across mobile, backend, and GPU infrastructure · real-time audio/video systems end to end, from the RN client through backend orchestration to the GPU render service · distributed systems debugging in production (collective-op deadlocks, cross-process races, subprocess pipe deadlocks) · multi-provider LLM integration and prompt engineering · RAG design under hard data-isolation requirements · payments and creator-payout infrastructure · trust &amp; safety and compliance engineering · GPU inference performance tuning · and production-mindful practice: zero-downtime deploys, calibrated unit economics, and written architectural records of past incidents and reverted approaches.</p>
+  </section>
+
+  <a class="back-link" href="../index.html">← All projects</a>
+
+  <footer>
+    Qing Li · <a href="https://nythelabs.com">nythelabs.com</a> · <a href="https://github.com/nythe-labs">GitHub</a>
+  </footer>
+
+</div>
+</body>
+</html>

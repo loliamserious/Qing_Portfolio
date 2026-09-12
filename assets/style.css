@@ -222,3 +222,26 @@ figure{margin:0;}
 .diagram-figure .flow-line.accent{stroke-opacity:.9;stroke-width:1.75;}
 .diagram-figure .label{fill:currentColor;opacity:.6;}
 .diagram-figure figcaption{padding:14px 4px 0;}
+
+/* ---- i18n ---- */
+html[data-lang="en"] [data-i18n-lang="zh"]{display:none;}
+html[data-lang="zh"] [data-i18n-lang="en"]{display:none;}
+html:not([data-lang]) [data-i18n-lang="zh"]{display:none;}
+
+.top-bar{display:flex;align-items:center;justify-content:flex-end;margin-bottom:28px;}
+.top-bar.with-back{justify-content:space-between;}
+
+.lang-switch{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:3px;gap:2px;flex:none;}
+.lang-btn{
+  border:none;
+  background:transparent;
+  color:var(--text-faint);
+  font:inherit;
+  font-size:12px;
+  line-height:1;
+  padding:6px 12px;
+  border-radius:999px;
+  cursor:pointer;
+}
+.lang-btn:hover{color:var(--text);}
+.lang-btn[aria-pressed="true"]{background:var(--text);color:var(--bg);}

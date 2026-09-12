@@ -3,8 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Qing Li — Portfolio</title>
-<meta name="description" content="Projects by Qing Li: full-stack and AI systems engineering, from mobile clients to distributed GPU infrastructure." />
+<script>
+(function(){
+  try{
+    var s=localStorage.getItem('portfolio-lang');
+    var l=(s==='en'||s==='zh')?s:(((navigator.language||'').toLowerCase().indexOf('zh')===0)?'zh':'en');
+    document.documentElement.setAttribute('data-lang',l);
+  }catch(e){document.documentElement.setAttribute('data-lang','en');}
+})();
+</script>
+<title data-en="Qing Li — Portfolio" data-zh="Qing Li — 作品集">Qing Li — Portfolio</title>
+<meta name="description" data-en="Projects by Qing Li: full-stack and AI systems engineering, from mobile clients to distributed GPU infrastructure." data-zh="Qing Li 的项目作品：全栈与 AI 系统工程，涵盖移动客户端到分布式 GPU 基础设施。" content="Projects by Qing Li: full-stack and AI systems engineering, from mobile clients to distributed GPU infrastructure." />
 <link rel="icon" href="assets/icons/arcadia-icon-64.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,10 +23,20 @@
 <body>
 <div class="wrap">
 
+  <div class="top-bar">
+    <div class="lang-switch" role="group" aria-label="Language / 语言">
+      <button type="button" class="lang-btn" data-lang-btn="en" aria-pressed="true">EN</button>
+      <button type="button" class="lang-btn" data-lang-btn="zh" aria-pressed="false">中文</button>
+    </div>
+  </div>
+
   <header class="hero">
     <p class="eyebrow">Qing Li</p>
-    <h1>Portfolio</h1>
-    <p class="tagline">Full-stack and AI systems engineering — mobile clients, backend orchestration, and distributed GPU infrastructure, built end to end.</p>
+    <h1><span data-i18n-lang="en">Portfolio</span><span data-i18n-lang="zh" hidden>作品集</span></h1>
+    <p class="tagline">
+      <span data-i18n-lang="en">Full-stack and AI systems engineering — mobile clients, backend orchestration, and distributed GPU infrastructure, built end to end.</span>
+      <span data-i18n-lang="zh" hidden>全栈与 AI 系统工程 — 从移动客户端、后端编排到分布式 GPU 基础设施，端到端亲手搭建。</span>
+    </p>
     <div class="links">
       <a href="https://nythelabs.com">nythelabs.com</a>
       <a href="https://github.com/nythe-labs">GitHub</a>
@@ -25,32 +44,47 @@
   </header>
 
   <section id="projects">
-    <h2>Projects</h2>
+    <h2><span data-i18n-lang="en">Projects</span><span data-i18n-lang="zh" hidden>项目</span></h2>
     <div class="project-grid">
 
       <a class="project-card" href="projects/arcadia.html">
         <div class="thumb">
-          <img class="cover" src="assets/arcadia/product-2.jpg" alt="Arcadia live video call screen with an AI persona" />
+          <img class="cover" src="assets/arcadia/product-2.jpg"
+               data-i18n-attr="alt"
+               data-en-alt="Arcadia live video call screen with an AI persona"
+               data-zh-alt="Arcadia 实时视频通话界面，展示 AI 角色"
+               alt="Arcadia live video call screen with an AI persona" />
         </div>
         <div class="body">
           <div class="card-title-row">
             <div class="icon-badge">
-              <img src="assets/icons/arcadia-icon-256.png" alt="Arcadia app icon" />
+              <img src="assets/icons/arcadia-icon-256.png"
+                   data-i18n-attr="alt"
+                   data-en-alt="Arcadia app icon"
+                   data-zh-alt="Arcadia 应用图标"
+                   alt="Arcadia app icon" />
             </div>
             <h3>Arcadia</h3>
           </div>
-          <p>A real-time AI avatar companion platform — mobile client, backend orchestration, and a 5-GPU distributed video generation service.</p>
+          <p>
+            <span data-i18n-lang="en">A real-time AI avatar companion platform — mobile client, backend orchestration, and a 5-GPU distributed video generation service.</span>
+            <span data-i18n-lang="zh" hidden>一个实时 AI 虚拟形象陪伴平台 — 包含移动客户端、后端编排，以及一套 5-GPU 分布式视频生成服务。</span>
+          </p>
           <div class="tags">
             <span>5× H200 GPU</span>
             <span>LiveKit WebRTC</span>
             <span>RunPod Serverless</span>
             <span>pgvector RAG</span>
-            <span>Real-time video generation</span>
+            <span data-i18n-lang="en">Real-time video generation</span>
+            <span data-i18n-lang="zh" hidden>实时视频生成</span>
           </div>
         </div>
       </a>
 
-      <div class="project-card placeholder">More projects coming soon</div>
+      <div class="project-card placeholder">
+        <span data-i18n-lang="en">More projects coming soon</span>
+        <span data-i18n-lang="zh" hidden>更多项目即将上线</span>
+      </div>
 
     </div>
   </section>
@@ -60,5 +94,6 @@
   </footer>
 
 </div>
+<script src="assets/i18n.js"></script>
 </body>
 </html>

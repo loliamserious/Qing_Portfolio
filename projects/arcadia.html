@@ -14,9 +14,9 @@
 </script>
 <title data-en="Arcadia — Qing Li" data-zh="Arcadia — Qing Li">Arcadia — Qing Li</title>
 <meta name="description"
-      data-en="Arcadia: a real-time AI avatar companion platform — mobile client, backend orchestration, and a 5-GPU distributed video generation service, built end to end."
-      data-zh="Arcadia：一个实时 AI 虚拟形象陪伴平台 — 移动客户端、后端编排，以及一套 5-GPU 分布式视频生成服务，端到端亲手搭建。"
-      content="Arcadia: a real-time AI avatar companion platform — mobile client, backend orchestration, and a 5-GPU distributed video generation service, built end to end." />
+      data-en="Arcadia: a real-time AI avatar companion platform — mobile client, backend orchestration, and a 2-GPU real-time video generation service, built end to end."
+      data-zh="Arcadia：一个实时 AI 虚拟形象陪伴平台 — 移动客户端、后端编排，以及一套 2-GPU 实时视频生成服务，端到端亲手搭建。"
+      content="Arcadia: a real-time AI avatar companion platform — mobile client, backend orchestration, and a 2-GPU real-time video generation service, built end to end." />
 <link rel="icon" href="../assets/icons/arcadia-icon-64.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -50,8 +50,8 @@
       <h1>Arcadia</h1>
     </div>
     <p class="tagline">
-      <span data-i18n-lang="en">A real-time AI avatar companion platform — mobile client, backend orchestration, and a 5-GPU distributed video generation service, built end to end.</span>
-      <span data-i18n-lang="zh" hidden>一个实时 AI 虚拟形象陪伴平台 — 移动客户端、后端编排，以及一套 5-GPU 分布式视频生成服务，端到端亲手搭建。</span>
+      <span data-i18n-lang="en">A real-time AI avatar companion platform — mobile client, backend orchestration, and a 2-GPU real-time video generation service, built end to end.</span>
+      <span data-i18n-lang="zh" hidden>一个实时 AI 虚拟形象陪伴平台 — 移动客户端、后端编排，以及一套 2-GPU 实时视频生成服务，端到端亲手搭建。</span>
     </p>
     <p class="lede">
       <span data-i18n-lang="en">Users train an avatar on their own chat history, photos, and voice. Other users then talk to that avatar by text, voice message, or live video call — where the avatar responds with generated video, not a lip-synced still image.</span>
@@ -62,19 +62,10 @@
     </div>
   </header>
 
-  <section id="screenshots">
+  <section id="product">
     <h2><span data-i18n-lang="en">Product</span><span data-i18n-lang="zh" hidden>产品</span></h2>
-    <div class="shot-grid">
-      <img src="../assets/arcadia/product-1.jpg"
-           data-i18n-attr="alt"
-           data-en-alt="Arcadia avatar creation flow: portrait upload and voice selection"
-           data-zh-alt="Arcadia 虚拟形象创建流程：上传头像照片与选择声音"
-           alt="Arcadia avatar creation flow: portrait upload and voice selection" />
-      <img src="../assets/arcadia/product-2.jpg"
-           data-i18n-attr="alt"
-           data-en-alt="Arcadia live video call screen with an AI persona"
-           data-zh-alt="Arcadia 实时视频通话界面，展示 AI 角色"
-           alt="Arcadia live video call screen with an AI persona" />
+    <div class="product-video">
+      <video src="../assets/arcadia/product.mp4" poster="../assets/arcadia/product-poster.jpg" controls playsinline preload="metadata"></video>
     </div>
   </section>
 
@@ -83,12 +74,13 @@
     <div class="video-grid">
       <figure>
         <div class="video-box">
-          <video src="../assets/arcadia/demo-1.mp4" poster="../assets/arcadia/demo-1-poster.jpg" controls muted playsinline preload="metadata"></video>
+          <video src="../assets/arcadia/demo-call-1.mp4" poster="../assets/arcadia/demo-call-1-poster.jpg" controls playsinline preload="metadata"></video>
         </div>
       </figure>
       <figure>
-        <div class="video-box">
-          <video src="../assets/arcadia/demo-2.mp4" poster="../assets/arcadia/demo-2-poster.jpg" controls muted playsinline preload="metadata"></video>
+        <div class="video-box placeholder">
+          <span data-i18n-lang="en">Second demo coming soon</span>
+          <span data-i18n-lang="zh" hidden>第二段演示即将上线</span>
         </div>
       </figure>
     </div>
@@ -102,15 +94,15 @@
     <h2><span data-i18n-lang="en">Why this was hard</span><span data-i18n-lang="zh" hidden>为什么这部分很难</span></h2>
     <p data-i18n-lang="en">The interesting constraint is the live call. When a user speaks, the system has ~3 seconds to transcribe speech, moderate it, retrieve memory, generate a reply, and synthesize a voice. From there it still has to <strong>render a video of the avatar saying it</strong> and stream that video into a WebRTC room that's already open — end to end, a full turn from the user's voice to video playback takes about 10 seconds.</p>
     <p data-i18n-lang="zh" hidden>最有意思的约束在于实时通话。用户一开口，系统只有约 3 秒时间完成语音转写、内容审核、记忆检索、生成回复和语音合成。在此之后，还需要<strong>渲染出形象说出这段话的视频</strong>，并把这段视频实时推流进一个已经建立好的 WebRTC 房间 — 从用户开口到视频播放完整的一轮对话，端到端总耗时约 10 秒。</p>
-    <p data-i18n-lang="en">That last step runs on five GPUs in parallel, in a single distributed inference session, streaming frames rather than writing a file. Most of the engineering below exists because of that constraint.</p>
-    <p data-i18n-lang="zh" hidden>最后这一步在五块 GPU 上并行运行，处于同一个分布式推理会话中，以流式方式产出帧而不是先写文件再读取。下文的大部分工程工作，都是为了满足这个约束而存在的。</p>
+    <p data-i18n-lang="en">That last step runs on two GPUs in parallel, in a single distributed inference session, streaming 704×1216 frames at 30 fps faster than real time rather than writing a file. Most of the engineering below exists because of that constraint.</p>
+    <p data-i18n-lang="zh" hidden>最后这一步在两块 GPU 上并行运行，处于同一个分布式推理会话中，以快于实时的速度流式产出 704×1216、30 fps 的视频帧，而不是先写文件再读取。下文的大部分工程工作，都是为了满足这个约束而存在的。</p>
 
     <figure class="diagram-figure">
       <svg viewBox="0 0 640 420" role="img"
            data-i18n-attr="aria-label"
-           data-en-aria-label="A user's phone connects over a LiveKit WebRTC room to a Python worker, which runs STT, moderation, retrieval and reply generation, then dispatches a render job to a 5-GPU RunPod service where a GPU process and a companion process exchange frames over IPC before the companion publishes video back into the same call."
-           data-zh-aria-label="用户手机通过 LiveKit WebRTC 房间连接到一个 Python 工作进程，该进程依次执行语音转写、内容审核、记忆检索与回复生成，随后将渲染任务分发到一个 5-GPU 的 RunPod 服务；在该服务内，GPU 进程与伴生进程通过 IPC 交换视频帧，最终由伴生进程把生成的视频发布回同一通话。"
-           aria-label="A user's phone connects over a LiveKit WebRTC room to a Python worker, which runs STT, moderation, retrieval and reply generation, then dispatches a render job to a 5-GPU RunPod service where a GPU process and a companion process exchange frames over IPC before the companion publishes video back into the same call.">
+           data-en-aria-label="A user's phone connects over a LiveKit WebRTC room to a Python worker, which runs STT, moderation, retrieval and reply generation, then dispatches a render job to a 2-GPU RunPod service where a GPU process and a companion process exchange frames over IPC before the companion publishes video back into the same call."
+           data-zh-aria-label="用户手机通过 LiveKit WebRTC 房间连接到一个 Python 工作进程，该进程依次执行语音转写、内容审核、记忆检索与回复生成，随后将渲染任务分发到一个 2-GPU 的 RunPod 服务；在该服务内，GPU 进程与伴生进程通过 IPC 交换视频帧，最终由伴生进程把生成的视频发布回同一通话。"
+           aria-label="A user's phone connects over a LiveKit WebRTC room to a Python worker, which runs STT, moderation, retrieval and reply generation, then dispatches a render job to a 2-GPU RunPod service where a GPU process and a companion process exchange frames over IPC before the companion publishes video back into the same call.">
         <defs>
           <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 z" fill="currentColor" opacity=".6"/>
@@ -140,8 +132,8 @@
 
         <!-- gpu outer -->
         <rect class="box" x="50" y="234" width="540" height="176" rx="8"/>
-        <text x="320" y="258" text-anchor="middle" font-size="13" font-weight="600">RunPod Serverless — 5× H200 SXM</text>
-        <text x="320" y="278" text-anchor="middle" font-size="11" opacity=".7">Wan2.2-S2V + TPP distributed inference</text>
+        <text x="320" y="258" text-anchor="middle" font-size="13" font-weight="600">RunPod Serverless — 2× H100</text>
+        <text x="320" y="278" text-anchor="middle" font-size="11" opacity=".7">LTX-2.5 22B (FP8) + sequence-parallel inference</text>
 
         <!-- sub-box A: gpu process -->
         <rect class="box accent" x="70" y="296" width="220" height="96" rx="8"/>
@@ -161,51 +153,82 @@
         <text class="label" x="320" y="378" text-anchor="middle" font-size="9">locked file</text>
       </svg>
       <figcaption>
-        <span data-i18n-lang="en">Client to worker to GPU service: the worker dispatches a render job, and inside the 5-GPU service the inference process and the LiveKit-publishing process trade frames and prompt updates over a Unix socket and a lock-protected shared state file.</span>
-        <span data-i18n-lang="zh" hidden>从客户端到工作进程再到 GPU 服务：工作进程分发渲染任务，在 5-GPU 服务内部，推理进程与负责向 LiveKit 发布视频的进程通过一个 Unix 套接字和一个加锁保护的共享状态文件，交换视频帧与提示词更新。</span>
+        <span data-i18n-lang="en">Client to worker to GPU service: the worker dispatches a render job, and inside the 2-GPU service the inference process and the LiveKit-publishing process trade frames and prompt updates over a Unix socket and a lock-protected shared state file.</span>
+        <span data-i18n-lang="zh" hidden>从客户端到工作进程再到 GPU 服务：工作进程分发渲染任务，在 2-GPU 服务内部，推理进程与负责向 LiveKit 发布视频的进程通过一个 Unix 套接字和一个加锁保护的共享状态文件，交换视频帧与提示词更新。</span>
       </figcaption>
     </figure>
   </section>
 
   <section id="video-gen">
     <h2>
-      <span data-i18n-lang="en">1. Real-time video generation on 5 GPUs</span>
-      <span data-i18n-lang="zh" hidden>1. 基于 5 块 GPU 的实时视频生成</span>
+      <span data-i18n-lang="en">1. Real-time video generation on 2 GPUs</span>
+      <span data-i18n-lang="zh" hidden>1. 基于 2 块 GPU 的实时视频生成</span>
     </h2>
-    <p data-i18n-lang="en">Built the production real-time communication system around an open-source inference engine (see <a href="#attribution">Attribution</a>): the LiveKit integration, cross-process IPC, concurrency safety, and observability that turn a research inference framework into something that survives production traffic.</p>
-    <p data-i18n-lang="zh" hidden>围绕一个开源推理引擎（见<a href="#attribution">致谢</a>）搭建了生产级实时通信系统：LiveKit 集成、跨进程 IPC、并发安全性，以及可观测性 — 这些工作把一个科研用的推理框架，改造成了能扛住真实生产流量的系统。</p>
+    <p data-i18n-lang="en">Built the production real-time communication system around open-source and open-weights inference engines (see <a href="#attribution">Attribution</a>): the LiveKit integration, cross-process IPC, concurrency safety, and observability that turn a research inference framework into something that survives production traffic.</p>
+    <p data-i18n-lang="zh" hidden>围绕开源、开放权重的推理引擎（见<a href="#attribution">致谢</a>）搭建了生产级实时通信系统：LiveKit 集成、跨进程 IPC、并发安全性，以及可观测性 — 这些工作把一个科研用的推理框架，改造成了能扛住真实生产流量的系统。</p>
+    <p data-i18n-lang="en">The GPU service has been through two generations. The first ran Wan2.2-S2V-14B on five H200 GPUs, at about 2.8 s per clip. The current one runs Lightricks' LTX-2.5 22B distilled audio-to-video model on two H100 GPUs at 704×1216 and 30 fps. It generates each 1.333-second clip in <strong>about 1.2 seconds, faster than real time</strong>, and the GPU cost per minute of generated video fell from $0.504 to $0.156 (<strong>about 69% lower</strong>).</p>
+    <p data-i18n-lang="zh" hidden>这套 GPU 服务已经历了两代。第一代在五块 H200 GPU 上运行 Wan2.2-S2V-14B，每个片段约 2.8 秒。当前这一代在两块 H100 GPU 上运行 Lightricks 的 LTX-2.5 22B 蒸馏版音频生成视频模型，分辨率 704×1216、30 fps。每个 1.333 秒的片段只需<strong>约 1.2 秒即可生成，快于实时</strong>；每分钟生成视频的 GPU 成本从 0.504 美元降到 0.156 美元（<strong>降低约 69%</strong>）。</p>
 
     <h3><span data-i18n-lang="en">Architecture</span><span data-i18n-lang="zh" hidden>架构</span></h3>
     <ul data-i18n-lang="en">
-      <li>A GPU process running 5-rank tensor/pipeline-parallel inference, and a separate companion process owning the LiveKit room connection and track publishing</li>
+      <li>A GPU process running 2-rank, Ulysses-style sequence-parallel inference: each GPU holds a full copy of the FP8 transformer, the token sequence is split across the two GPUs, and attention exchanges data between them with all-to-all. A separate companion process owns the LiveKit room connection and track publishing</li>
       <li>IPC between them: a Unix domain socket for video frame transport, plus a lock-protected shared state file for audio-clip and prompt-update coordination</li>
       <li>Real-time ingestion of TTS audio (LiveKit byte-stream) and dynamic expression/motion prompt updates from the backend, synchronized against the clip currently being generated</li>
+      <li>Clips are chained: each 49-frame window starts with the last 9 frames of the previous clip, so every clip adds 40 new frames, and a reference image keyframe keeps the avatar's identity stable across clips</li>
     </ul>
     <ul data-i18n-lang="zh" hidden>
-      <li>一个运行 5-rank 张量/流水线并行推理的 GPU 进程，以及一个独立的伴生进程，负责持有 LiveKit 房间连接并发布音视频轨道</li>
+      <li>一个运行 2-rank Ulysses 式序列并行推理的 GPU 进程：每块 GPU 各持有一份完整的 FP8 transformer，token 序列被切分到两块 GPU 上，注意力计算时通过 all-to-all 在两者之间交换数据。另有一个独立的伴生进程，负责持有 LiveKit 房间连接并发布音视频轨道</li>
       <li>两者之间的 IPC：用一个 Unix 域套接字传输视频帧，另外用一个加锁保护的共享状态文件协调音频片段与提示词更新</li>
       <li>实时接收 TTS 音频（LiveKit 字节流）以及后端下发的动态表情/动作提示词更新，并与当前正在生成的片段保持同步</li>
+      <li>片段首尾衔接：每个 49 帧的窗口都以上一个片段的最后 9 帧开头，因此每个片段新增 40 帧；同时用一张参考图像关键帧，让形象的身份特征在各片段之间保持稳定</li>
     </ul>
 
-    <p data-i18n-lang="en"><strong>Performance</strong> — Validated and locked in an FP8 quantization + <code>torch.compile</code> configuration, and evaluated H100 vs. H200. Production runs on H200 SXM at <strong>~2.8s per clip</strong>, down from a ~3.70s unoptimized baseline (~24% faster), and ~8% faster than the same configuration on H100 (~3.1s).</p>
-    <p data-i18n-lang="zh" hidden><strong>性能</strong> — 验证并固化了 FP8 量化 + <code>torch.compile</code> 的配置组合，并对比评估了 H100 与 H200。生产环境跑在 H200 SXM 上，<strong>每个片段约 2.8 秒</strong>，相比约 3.70 秒的未优化基线快约 24%，比同配置下的 H100（约 3.1 秒）快约 8%。</p>
+    <h3><span data-i18n-lang="en">Performance</span><span data-i18n-lang="zh" hidden>性能</span></h3>
+    <p data-i18n-lang="en">Profiled before optimizing, then removed the measured bottlenecks:</p>
+    <p data-i18n-lang="zh" hidden>先做性能剖析再动手优化，然后逐一消除实测出的瓶颈：</p>
+    <ul data-i18n-lang="en">
+      <li><strong>FP8 and CUDA graphs.</strong> FP8 weights with <code>torch.compile</code> and CUDA graphs on a fully FP8-quantized checkpoint: about 0.3 s per clip faster than bf16 on a single GPU. With two GPUs, the all-to-all returned zero-copy views that crashed CUDA-graph replay and garbled the FP8 output; copying the receive buffers fixed both for about 0.03 s per clip.</li>
+      <li><strong>A pruned VAE decoder.</strong> A pruned and distilled VAE decoder (PrunaVAED): decoding went from about 2.1 s to <strong>about 0.16 s per clip</strong>, at about 36 dB PSNR against the full decoder.</li>
+      <li><strong>Host-side overhead.</strong> Found with a kernel-level profile: about 650 ms of a 2.3 s GPU timeline was idle, spent in Python code that rebuilt and disposed the model around every stage. Keeping the model resident saved about 0.4 s per clip; static input addresses for the CUDA graphs saved about 0.1 s; reusing the audio mel processor saved about 0.2 s.</li>
+      <li><strong>Prompt and image caches.</strong> Prompt-encoding cache keys that no longer miss when only the image list differs, an idle prompt encoded once at startup, and reference-image encodings cached before the first speech clip.</li>
+    </ul>
+    <ul data-i18n-lang="zh" hidden>
+      <li><strong>FP8 与 CUDA graphs。</strong>在完全 FP8 量化的检查点上，以 FP8 权重配合 <code>torch.compile</code> 和 CUDA graphs：单卡上每个片段比 bf16 快约 0.3 秒。换到双卡后，all-to-all 返回的零拷贝视图会导致 CUDA graph 重放崩溃，并让 FP8 输出变成乱码；把接收缓冲区复制一份即可同时修复这两个问题，代价仅约每片段 0.03 秒。</li>
+      <li><strong>剪枝后的 VAE 解码器。</strong>采用经过剪枝和蒸馏的 VAE 解码器（PrunaVAED）：解码耗时从约 2.1 秒降到<strong>每片段约 0.16 秒</strong>，与完整解码器相比 PSNR 约为 36 dB。</li>
+      <li><strong>主机端开销。</strong>通过内核级性能剖析发现：在 2.3 秒的 GPU 时间线中，约有 650 毫秒处于空闲，时间都耗在了每个阶段前后重建、销毁模型的 Python 代码上。让模型常驻显存后，每片段节省约 0.4 秒；为 CUDA graphs 固定输入地址节省约 0.1 秒；复用音频 mel 处理器节省约 0.2 秒。</li>
+      <li><strong>提示词与图像缓存。</strong>修正了提示词编码的缓存键，使其不再因为仅图像列表不同而未命中；空闲提示词在启动时只编码一次；参考图像的编码在第一个语音片段之前就提前缓存好。</li>
+    </ul>
 
-    <h3><span data-i18n-lang="en">Three production bugs worth reading about</span><span data-i18n-lang="zh" hidden>三个值得一读的生产环境 bug</span></h3>
+    <h3><span data-i18n-lang="en">Lip sync: a root cause, not a tuning pass</span><span data-i18n-lang="zh" hidden>口型同步：找到根因，而不是调参了事</span></h3>
+    <p data-i18n-lang="en">With real text-to-speech audio the avatar's mouth sometimes stayed closed, or closed halfway through a sentence, while a synthetic recording worked every time. The obvious suspect was the audio, so I tested that first with controlled runs on fixed inputs: loudness, noise floor, speaking rate, reverb, equalization and level normalization, plus spectral and rhythm statistics of the audio. Loudness and noise did not matter, and speaking rate helped only partly.</p>
+    <p data-i18n-lang="zh" hidden>使用真实的 TTS 音频时，形象的嘴有时会一直闭着，或者一句话说到一半就闭上了，而一段合成录音却每次都正常。最明显的嫌疑对象是音频本身，所以我先用固定输入做对照实验逐项排查：响度、底噪、语速、混响、均衡与电平归一化，以及音频的频谱和节奏统计特征。结果是响度和噪声都没有影响，语速也只起到部分作用。</p>
+    <p data-i18n-lang="en">The cause was the conditioning. Every clip is anchored by a reference-image keyframe at strength 1.0, which forces the mouth state of that frame. A closed-mouth reference, repeated clip after clip, pulled each clip back to a closed mouth, and a keyframe placed near the end of a window was carried into the next clip through the overlap. Lowering the strength made the face drift, so the strength stayed at 1.0 and the fix went into what is shown and when: each avatar now stores a second, slightly-open-mouth reference image, used on every speech clip, with the original image returned only on the last clip so the mouth closes cleanly. Gesture prompts needed a full descriptive sentence; very short ones did not work. The final setup kept the mouth moving across three different real voices, with and without an expression or a gesture such as waving or making a heart.</p>
+    <p data-i18n-lang="zh" hidden>真正的原因在于条件约束。每个片段都由一张强度为 1.0 的参考图像关键帧锚定，它会强制锁定该帧的嘴部状态。一张闭嘴的参考图被一个片段接一个片段地重复使用，就会把每个片段都拉回闭嘴状态；而放在窗口末尾附近的关键帧，又会通过重叠帧被带入下一个片段。降低强度会让脸部发生漂移，所以强度保持 1.0 不变，修复转而落在“展示什么、何时展示”上：现在每个形象都会额外保存一张嘴巴微张的参考图像，在每个语音片段中使用，只有在最后一个片段才换回原图，让嘴能自然地合上。手势提示词需要一个完整的描述性句子，过短的提示词不起作用。最终方案在三种不同的真实声音下都能让嘴部持续动起来，无论是否带有表情，或挥手、比心之类的手势。</p>
 
-    <p data-i18n-lang="en"><strong>NCCL collective-op deadlock, fixed at the architectural level.</strong> In a 5-rank distributed loop, every rank must call <code>dist.broadcast_object_list</code> the same number of times in the same order, every iteration. A rank-0-only decision placed inside a conditional branch means four ranks block forever waiting for a broadcast that never comes. This class of bug recurred three separate times before I stopped patching instances and fixed the pattern: all rank-0 decisions moved unconditionally to the top of every loop iteration.</p>
-    <p data-i18n-lang="zh" hidden><strong>NCCL 集合通信死锁，从架构层面根治。</strong>在一个 5-rank 的分布式循环里，每个 rank 在每一轮迭代中都必须以相同的顺序、相同的次数调用 <code>dist.broadcast_object_list</code>。如果一个只属于 rank-0 的决策被放进了条件分支，就会导致另外四个 rank 永远阻塞，等待一次永远不会到来的广播。这类 bug 反复出现了三次之后，我不再逐个打补丁，而是直接修正了这个模式：把所有 rank-0 的决策无条件地移到每轮循环的最前面。</p>
+    <details class="muted-block">
+      <summary>
+        <span data-i18n-lang="en">Production bugs from the first-generation GPU service</span>
+        <span data-i18n-lang="zh" hidden>第一代 GPU 服务中的生产环境 bug</span>
+      </summary>
 
-    <p data-i18n-lang="en"><strong>Cross-process race on a shared state file.</strong> Unlocked read-modify-write access let an already-consumed audio queue entry reappear after deletion, crashing the session with an unhandled <code>FileNotFoundError</code>. Fixed with POSIX file locking and validated under a 200-operation concurrent stress test: <strong>200/200 correct with locking; 178 lost updates and 181 "zombie" entries reproduced without it.</strong></p>
-    <p data-i18n-lang="zh" hidden><strong>共享状态文件上的跨进程竞态。</strong>没有加锁的“读-改-写”操作，会让一条已经被消费、删除过的音频队列记录重新出现，导致会话因未处理的 <code>FileNotFoundError</code> 而崩溃。修复方式是引入 POSIX 文件锁，并通过一次 200 次操作的并发压力测试完成验证：<strong>加锁后 200/200 全部正确；不加锁时复现出 178 次更新丢失和 181 条“僵尸”记录。</strong></p>
+      <p class="muted-intro" data-i18n-lang="en">These were found while running the first generation, a 5-GPU, 5-rank session. The real-time layer around the model (the companion process, the socket and the shared state file) carried over to the current version, and so did the rules these bugs taught.</p>
+      <p class="muted-intro" data-i18n-lang="zh" hidden>这些问题是在运行第一代服务（一个 5-GPU、5-rank 的会话）时发现的。模型外围的实时层（伴生进程、套接字和共享状态文件）延续到了当前版本，这些 bug 带来的经验法则也一并延续了下来。</p>
 
-    <p data-i18n-lang="en"><strong>Subprocess pipe deadlock.</strong> An FFmpeg call drained <code>stdout</code> but never <code>stderr</code>. Under load, the subprocess blocked writing to a full stderr pipe while the caller blocked reading stdout — a circular wait. Resolved with <code>subprocess.communicate()</code>, which the standard library documents specifically to avoid this.</p>
-    <p data-i18n-lang="zh" hidden><strong>子进程管道死锁。</strong>一次 FFmpeg 调用只读取了 <code>stdout</code>，从未读取 <code>stderr</code>。高负载下，子进程因 stderr 管道写满而阻塞，同时调用方又在阻塞等待读取 stdout — 形成了循环等待。最终改用 <code>subprocess.communicate()</code> 解决，这正是标准库文档中明确用来规避此类问题的方法。</p>
+      <p data-i18n-lang="en"><strong>NCCL collective-op deadlock, fixed at the architectural level.</strong> In a multi-rank distributed loop, every rank must call <code>dist.broadcast_object_list</code> the same number of times in the same order, every iteration. A rank-0-only decision placed inside a conditional branch means the other ranks block forever waiting for a broadcast that never comes. This class of bug recurred three separate times in the first version's 5-rank loop before I stopped patching instances and fixed the pattern: all rank-0 decisions moved unconditionally to the top of every loop iteration. The same rule held in the current version: a background thread that pre-encoded prompts raced the sequence-parallel collectives and hung the ranks, and removing it fixed it.</p>
+      <p data-i18n-lang="zh" hidden><strong>NCCL 集合通信死锁，从架构层面根治。</strong>在一个多 rank 的分布式循环里，每个 rank 在每一轮迭代中都必须以相同的顺序、相同的次数调用 <code>dist.broadcast_object_list</code>。如果一个只属于 rank-0 的决策被放进了条件分支，就会导致其他 rank 永远阻塞，等待一次永远不会到来的广播。这类 bug 在第一版的 5-rank 循环中反复出现了三次之后，我不再逐个打补丁，而是直接修正了这个模式：把所有 rank-0 的决策无条件地移到每轮循环的最前面。同样的规则在当前版本中依然成立：一个预先编码提示词的后台线程与序列并行的集合通信发生竞争，导致各 rank 挂起，移除该线程后问题解决。</p>
 
-    <p data-i18n-lang="en"><strong>Observability</strong> — Layered diagnostic logging across the full audio/video path (byte-stream receipt, disk I/O, audio slicing, cross-process transport, inference entry), plus a <code>faulthandler</code> hook that dumps a full stack trace automatically when a call hangs. In a 5-process, 5-GPU system, this is the difference between a one-hour diagnosis and a one-day one.</p>
-    <p data-i18n-lang="zh" hidden><strong>可观测性</strong> — 在整条音视频路径上（字节流接收、磁盘 I/O、音频切片、跨进程传输、推理入口）分层部署了诊断日志，并接入了 <code>faulthandler</code> 钩子，在调用挂起时自动导出完整的调用栈。在一个 5 进程、5 GPU 的系统里，这决定了排查一次故障是花一小时还是花一整天。</p>
+      <p data-i18n-lang="en"><strong>Cross-process race on a shared state file.</strong> Unlocked read-modify-write access let an already-consumed audio queue entry reappear after deletion, crashing the session with an unhandled <code>FileNotFoundError</code>. Fixed with POSIX file locking and validated under a 200-operation concurrent stress test: <strong>200/200 correct with locking; 178 lost updates and 181 "zombie" entries reproduced without it.</strong></p>
+      <p data-i18n-lang="zh" hidden><strong>共享状态文件上的跨进程竞态。</strong>没有加锁的“读-改-写”操作，会让一条已经被消费、删除过的音频队列记录重新出现，导致会话因未处理的 <code>FileNotFoundError</code> 而崩溃。修复方式是引入 POSIX 文件锁，并通过一次 200 次操作的并发压力测试完成验证：<strong>加锁后 200/200 全部正确；不加锁时复现出 178 次更新丢失和 181 条“僵尸”记录。</strong></p>
 
-    <p class="note" data-i18n-lang="en">Also fixed: a silent-audio bug where TTS output at 24 kHz was fed to a LiveKit <code>AudioSource</code> fixed at 16 kHz. It only manifested on real speech clips — idle silence happened to already match the fixed rate, so the failure was invisible until someone actually talked.</p>
-    <p class="note" data-i18n-lang="zh" hidden>另外还修复了一个静音 bug：24 kHz 的 TTS 输出被喂给了一个固定为 16 kHz 的 LiveKit <code>AudioSource</code>。这个问题只有在真实语音片段上才会暴露 — 因为空闲静音恰好与固定采样率“吻合”，所以在真正有人说话之前，这个错误一直是隐形的。</p>
+      <p data-i18n-lang="en"><strong>Subprocess pipe deadlock.</strong> An FFmpeg call drained <code>stdout</code> but never <code>stderr</code>. Under load, the subprocess blocked writing to a full stderr pipe while the caller blocked reading stdout — a circular wait. Resolved with <code>subprocess.communicate()</code>, which the standard library documents specifically to avoid this.</p>
+      <p data-i18n-lang="zh" hidden><strong>子进程管道死锁。</strong>一次 FFmpeg 调用只读取了 <code>stdout</code>，从未读取 <code>stderr</code>。高负载下，子进程因 stderr 管道写满而阻塞，同时调用方又在阻塞等待读取 stdout — 形成了循环等待。最终改用 <code>subprocess.communicate()</code> 解决，这正是标准库文档中明确用来规避此类问题的方法。</p>
+
+      <p data-i18n-lang="en"><strong>Observability.</strong> Layered diagnostic logging across the full audio/video path (byte-stream receipt, disk I/O, audio slicing, cross-process transport, inference entry), plus a <code>faulthandler</code> hook that dumps a full stack trace automatically when a call hangs. In a multi-process, multi-GPU system, this is the difference between a one-hour diagnosis and a one-day one.</p>
+      <p data-i18n-lang="zh" hidden><strong>可观测性。</strong>在整条音视频路径上（字节流接收、磁盘 I/O、音频切片、跨进程传输、推理入口）分层部署了诊断日志，并接入了 <code>faulthandler</code> 钩子，在调用挂起时自动导出完整的调用栈。在一个多进程、多 GPU 的系统里，这决定了排查一次故障是花一小时还是花一整天。</p>
+
+      <p data-i18n-lang="en"><strong>Also fixed:</strong> a silent-audio bug where TTS output at 24 kHz was fed to a LiveKit <code>AudioSource</code> fixed at 16 kHz. It only manifested on real speech clips — idle silence happened to already match the fixed rate, so the failure was invisible until someone actually talked.</p>
+      <p data-i18n-lang="zh" hidden><strong>另外还修复了：</strong>一个静音 bug：24 kHz 的 TTS 输出被喂给了一个固定为 16 kHz 的 LiveKit <code>AudioSource</code>。这个问题只有在真实语音片段上才会暴露 — 因为空闲静音恰好与固定采样率“吻合”，所以在真正有人说话之前，这个错误一直是隐形的。</p>
+    </details>
   </section>
 
   <section id="backend">
@@ -213,8 +236,8 @@
       <span data-i18n-lang="en">2. Backend — Python / FastAPI</span>
       <span data-i18n-lang="zh" hidden>2. 后端 — Python / FastAPI</span>
     </h2>
-    <p data-i18n-lang="en"><strong>Avatar creation pipeline.</strong> Selfie face verification (ONNX face-recognition model, cosine similarity, <strong>in-memory only — no biometric data persisted</strong>) → GPT-image-2 portrait stylization → Gemini Omni Flash image-to-video preview → Cartesia voice cloning. Chained as background tasks with independent status tracking the client polls.</p>
-    <p data-i18n-lang="zh" hidden><strong>虚拟形象创建流水线。</strong>自拍人脸校验（ONNX 人脸识别模型，余弦相似度，<strong>仅在内存中处理 — 不持久化任何生物特征数据</strong>）→ GPT-image-2 头像风格化 → Gemini Omni Flash 图生视频预览 → Cartesia 声音克隆。整条流程以后台任务串联，各阶段独立维护状态，供客户端轮询查询。</p>
+    <p data-i18n-lang="en"><strong>Avatar creation pipeline.</strong> Selfie face verification (ONNX face-recognition model, cosine similarity, <strong>in-memory only — no biometric data persisted</strong>) → GPT-image-2 portrait stylization → Gemini Omni Flash image-to-video preview → Cartesia voice cloning. Each avatar also gets a second, slightly-open-mouth reference image that the GPU worker uses for lip sync. Chained as background tasks with independent status tracking the client polls.</p>
+    <p data-i18n-lang="zh" hidden><strong>虚拟形象创建流水线。</strong>自拍人脸校验（ONNX 人脸识别模型，余弦相似度，<strong>仅在内存中处理 — 不持久化任何生物特征数据</strong>）→ GPT-image-2 头像风格化 → Gemini Omni Flash 图生视频预览 → Cartesia 声音克隆。每个形象还会额外生成一张嘴巴微张的参考图像，供 GPU 工作进程做口型同步使用。整条流程以后台任务串联，各阶段独立维护状态，供客户端轮询查询。</p>
 
     <p data-i18n-lang="en"><strong>Live-call orchestration.</strong> A LiveKit Agents worker running as a separate long-lived process with graceful drain-on-shutdown, so deploys don't drop calls in progress. Per turn: Deepgram STT → moderation → concurrent RAG lookups → Gemini reply → Cartesia TTS → GPU render dispatch.</p>
     <p data-i18n-lang="zh" hidden><strong>实时通话编排。</strong>LiveKit Agents 工作进程作为一个独立的常驻进程运行，支持关闭时优雅排空，保证发布上线不会打断正在进行的通话。每一轮对话依次经过：Deepgram 语音转写 → 内容审核 → 并发 RAG 检索 → Gemini 生成回复 → Cartesia 语音合成 → 分发到 GPU 渲染。</p>
@@ -258,10 +281,10 @@
 
   <section id="attribution">
     <h2><span data-i18n-lang="en">Attribution</span><span data-i18n-lang="zh" hidden>致谢</span></h2>
-    <p data-i18n-lang="en">The generation model (<strong>Wan2.2-S2V-14B</strong>) and its distributed inference framework — Timestep-forcing Pipeline Parallelism, the distilled 4-step LoRA, and block-wise autoregressive streaming — come from the open-source <a href="https://github.com/Alibaba-Quark/LiveAvatar">LiveAvatar</a> project by the Alibaba Quark team. I did not train or design them.</p>
-    <p data-i18n-lang="zh" hidden>生成模型（<strong>Wan2.2-S2V-14B</strong>）及其分布式推理框架 — 包括 Timestep-forcing 流水线并行、蒸馏得到的 4 步 LoRA，以及分块自回归流式生成 — 均来自阿里巴巴夸克团队的开源项目 <a href="https://github.com/Alibaba-Quark/LiveAvatar">LiveAvatar</a>。这些模型与框架并非由我训练或设计。</p>
-    <p data-i18n-lang="en">What I built is the production real-time communication system around that inference engine: the LiveKit integration, cross-process IPC, concurrency safety, observability, and the reliability work needed to keep a 5-GPU, multi-process distributed session alive under real traffic.</p>
-    <p data-i18n-lang="zh" hidden>我所构建的是围绕这套推理引擎的生产级实时通信系统：LiveKit 集成、跨进程 IPC、并发安全性、可观测性，以及让一个 5-GPU、多进程的分布式会话在真实流量下稳定存活所需的各项可靠性工作。</p>
+    <p data-i18n-lang="en">The current generation model, <strong>LTX-2.5</strong> (a 22B distilled audio-to-video model released with open weights), comes from Lightricks, and the pruned VAE decoder (<strong>PrunaVAED</strong>) comes from Pruna AI. The first-generation model (<strong>Wan2.2-S2V-14B</strong>) and its distributed inference framework — Timestep-forcing Pipeline Parallelism, the distilled 4-step LoRA, and block-wise autoregressive streaming — come from the open-source <a href="https://github.com/Alibaba-Quark/LiveAvatar">LiveAvatar</a> project by the Alibaba Quark team. LiveKit provides the real-time media layer. I did not train or design any of these models.</p>
+    <p data-i18n-lang="zh" hidden>当前这一代的生成模型 <strong>LTX-2.5</strong>（一个以开放权重发布的 22B 蒸馏版音频生成视频模型）来自 Lightricks，剪枝后的 VAE 解码器（<strong>PrunaVAED</strong>）来自 Pruna AI。第一代生成模型（<strong>Wan2.2-S2V-14B</strong>）及其分布式推理框架 — 包括 Timestep-forcing 流水线并行、蒸馏得到的 4 步 LoRA，以及分块自回归流式生成 — 均来自阿里巴巴夸克团队的开源项目 <a href="https://github.com/Alibaba-Quark/LiveAvatar">LiveAvatar</a>。实时媒体层由 LiveKit 提供。这些模型均非由我训练或设计。</p>
+    <p data-i18n-lang="en">What I built is the production real-time communication system around the inference engines: the LiveKit integration, cross-process IPC, concurrency safety, observability, the inference performance work, the reference-image strategy that keeps the lips in sync, and the reliability work needed to keep a multi-GPU, multi-process distributed session alive under real traffic.</p>
+    <p data-i18n-lang="zh" hidden>我所构建的是围绕这些推理引擎的生产级实时通信系统：LiveKit 集成、跨进程 IPC、并发安全性、可观测性、推理性能优化、保证口型同步的参考图像策略，以及让一个多 GPU、多进程的分布式会话在真实流量下稳定存活所需的各项可靠性工作。</p>
   </section>
 
   <section id="stack">
@@ -269,7 +292,7 @@
     <p class="stack-row"><b><span data-i18n-lang="en">Mobile</span><span data-i18n-lang="zh" hidden>移动端</span></b> — React Native 0.86, React 19, Expo SDK 57, TypeScript, NativeWind, React Navigation, Reanimated 4, LiveKit RN SDK + WebRTC, RevenueCat, Supabase JS</p>
     <p class="stack-row"><b><span data-i18n-lang="en">Backend</span><span data-i18n-lang="zh" hidden>后端</span></b> — Python, FastAPI, Pydantic Settings, Supabase (Postgres + pgvector + Auth + Storage), LiveKit Agents, sentence-transformers, InsightFace (ONNX), Stripe Connect, RevenueCat webhooks, Railway</p>
     <p class="stack-row"><b><span data-i18n-lang="en">AI services</span><span data-i18n-lang="zh" hidden>AI 服务</span></b> — OpenAI (moderation, transcription, image), Google Gemini (reply generation, Omni Flash video, Cloud Vision OCR), Deepgram (streaming STT), Cartesia (voice cloning + TTS)</p>
-    <p class="stack-row"><b><span data-i18n-lang="en">GPU infra</span><span data-i18n-lang="zh" hidden>GPU 基础设施</span></b> — RunPod Serverless (H200 SXM), PyTorch, torch.distributed / NCCL, FP8 quantization, torch.compile, Bazel, Docker, FFmpeg, asyncio</p>
+    <p class="stack-row"><b><span data-i18n-lang="en">GPU infra</span><span data-i18n-lang="zh" hidden>GPU 基础设施</span></b> — RunPod Serverless (H100), PyTorch, torch.distributed / NCCL, sequence parallelism, FP8 quantization, torch.compile with CUDA graphs, LTX-2.5, PrunaVAED, Bazel, Docker, FFmpeg, asyncio</p>
   </section>
 
   <section id="demonstrates">
@@ -277,8 +300,8 @@
       <span data-i18n-lang="en">What this project demonstrates</span>
       <span data-i18n-lang="zh" hidden>本项目展示的能力</span>
     </h2>
-    <p data-i18n-lang="en">Full-stack ownership across mobile, backend, and GPU infrastructure · real-time audio/video systems end to end, from the RN client through backend orchestration to the GPU render service · distributed systems debugging in production (collective-op deadlocks, cross-process races, subprocess pipe deadlocks) · multi-provider LLM integration and prompt engineering · RAG design under hard data-isolation requirements · payments and creator-payout infrastructure · trust &amp; safety and compliance engineering · GPU inference performance tuning · and production-mindful practice: zero-downtime deploys, calibrated unit economics, and written architectural records of past incidents and reverted approaches.</p>
-    <p data-i18n-lang="zh" hidden>横跨移动端、后端与 GPU 基础设施的全栈把控 · 从 RN 客户端到后端编排再到 GPU 渲染服务的端到端实时音视频系统 · 生产环境下的分布式系统排障（集合通信死锁、跨进程竞态、子进程管道死锁）· 多供应商大模型集成与提示词工程 · 在严格数据隔离要求下的 RAG 设计 · 支付与创作者提现基础设施 · 信任与安全及合规工程 · GPU 推理性能调优 · 以及具备生产意识的工程实践：零停机部署、经过精算的单位经济模型，以及对历史事故和被放弃方案的书面架构记录。</p>
+    <p data-i18n-lang="en">Full-stack ownership across mobile, backend, and GPU infrastructure · real-time audio/video systems end to end, from the RN client through backend orchestration to the GPU render service · distributed systems debugging in production (collective-op deadlocks, cross-process races, subprocess pipe deadlocks) · GPU inference performance engineering: profiling first, then removing the measured bottlenecks, taking generation to faster than real time and cutting GPU cost per minute of video by about 69% · debugging by controlled experiment, ruling out the obvious suspect and isolating the real cause in the conditioning design · multi-provider LLM integration and prompt engineering · RAG design under hard data-isolation requirements · payments and creator-payout infrastructure · trust &amp; safety and compliance engineering · and production-mindful practice: zero-downtime deploys, calibrated unit economics, and written architectural records of past incidents and reverted approaches.</p>
+    <p data-i18n-lang="zh" hidden>横跨移动端、后端与 GPU 基础设施的全栈把控 · 从 RN 客户端到后端编排再到 GPU 渲染服务的端到端实时音视频系统 · 生产环境下的分布式系统排障（集合通信死锁、跨进程竞态、子进程管道死锁）· GPU 推理性能工程：先剖析、再消除实测瓶颈，把生成速度提升到快于实时，并将每分钟视频的 GPU 成本降低约 69% · 用对照实验排查问题：先排除最明显的嫌疑，再把真正的原因定位到条件约束的设计上 · 多供应商大模型集成与提示词工程 · 在严格数据隔离要求下的 RAG 设计 · 支付与创作者提现基础设施 · 信任与安全及合规工程 · 以及具备生产意识的工程实践：零停机部署、经过精算的单位经济模型，以及对历史事故和被放弃方案的书面架构记录。</p>
   </section>
 
   <a class="back-link" href="../index.html">

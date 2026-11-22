@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>
+(function(){
+  try{
+    var s=localStorage.getItem('portfolio-lang');
+    var l=(s==='en'||s==='zh')?s:(((navigator.language||'').toLowerCase().indexOf('zh')===0)?'zh':'en');
+    document.documentElement.setAttribute('data-lang',l);
+  }catch(e){document.documentElement.setAttribute('data-lang','en');}
+})();
+</script>
+<title data-en="Furiday — Qing Li" data-zh="Furiday — Qing Li">Furiday — Qing Li</title>
+<meta name="description"
+      data-en="Furiday: your own pet, in real-time video, getting your tasks done — a demo AI desktop agent for macOS built on Meta's Muse API."
+      data-zh="Furiday：让你自己的宠物以实时视频的形式帮你完成任务 — 一个基于 Meta Muse API 构建的 macOS AI 桌面智能体 Demo。"
+      content="Furiday: your own pet, in real-time video, getting your tasks done — a demo AI desktop agent for macOS built on Meta's Muse API." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" />
+<link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top-bar with-back">
+    <a class="back-link" href="../index.html">
+      <span data-i18n-lang="en">← All projects</span>
+      <span data-i18n-lang="zh" hidden>← 返回全部项目</span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language / 语言">
+      <button type="button" class="lang-btn" data-lang-btn="en" aria-pressed="true">EN</button>
+      <button type="button" class="lang-btn" data-lang-btn="zh" aria-pressed="false">中文</button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <p class="eyebrow"><span data-i18n-lang="en">Project · Demo</span><span data-i18n-lang="zh" hidden>项目 · Demo</span></p>
+    <div class="title-row">
+      <h1>Furiday</h1>
+    </div>
+    <p class="tagline">
+      <span data-i18n-lang="en">Your own pet, in real-time video, getting your tasks done — an AI desktop agent for macOS built on Meta's Muse API.</span>
+      <span data-i18n-lang="zh" hidden>让你自己的宠物以实时视频的形式帮你把活干完 — 一个基于 Meta Muse API 构建的 macOS AI 桌面智能体。</span>
+    </p>
+    <p class="lede">
+      <span data-i18n-lang="en">Upload one photo of your pet and it becomes a live wallpaper on your desktop. Type or say a task — research and write a document, turn a CSV into an Excel workbook with charts, tidy up files and draft an email — and the agent really does the work with tools in the background, while the wallpaper switches to real-time generated video of <em>your</em> pet acting out what it is doing. When the work is done, the pet looks up and says "All done!".</span>
+      <span data-i18n-lang="zh" hidden>上传一张宠物照片，它就会变成你桌面上的动态壁纸。输入或说出一个任务 — 调研并撰写文档、把 CSV 整理成带图表的 Excel 工作簿、整理文件并起草邮件 — 智能体会在后台真正调用工具完成工作，同时壁纸切换为<em>你的</em>宠物的实时生成视频，演绎它此刻正在做的事。工作完成后，宠物会抬起头说一声 "All done!"。</span>
+    </p>
+    <div class="links">
+      <a href="https://github.com/loliamserious/furiday">GitHub</a>
+      <a href="https://youtu.be/miLys0U7unk">
+        <span data-i18n-lang="en">Demo video on YouTube</span>
+        <span data-i18n-lang="zh" hidden>YouTube 演示视频</span>
+      </a>
+    </div>
+  </header>
+
+  <section id="demo">
+    <h2><span data-i18n-lang="en">Demo</span><span data-i18n-lang="zh" hidden>演示</span></h2>
+    <div class="product-video">
+      <iframe src="https://www.youtube-nocookie.com/embed/miLys0U7unk"
+              title="Furiday demo video"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen></iframe>
+    </div>
+    <p class="note">
+      <span data-i18n-lang="en">A demo-level project: single user, no accounts, built to show the idea end to end rather than to ship.</span>
+      <span data-i18n-lang="zh" hidden>这是一个 Demo 级项目：单用户、无账号体系，目的是端到端地验证这个想法，而非正式上线的产品。</span>
+    </p>
+  </section>
+
+  <section id="how">
+    <h2><span data-i18n-lang="en">How it works</span><span data-i18n-lang="zh" hidden>工作原理</span></h2>
+    <ul data-i18n-lang="en">
+      <li><strong>Onboarding.</strong> One pet photo goes through a check (Muse Spark), day and night portraits (Muse Image), and ten short idle loops (Gemini Omni Flash) that play as the wallpaper while the pet has nothing to do.</li>
+      <li><strong>The work loop.</strong> Each task gets its own LiveKit room and a LiveKit Agents job running a Muse Wonder loop with web search and function tools. Desktop file tools run in the Electron main process over RPC, restricted to the Desktop and Downloads, with confirmations for risky actions.</li>
+      <li><strong>The pet acts it out.</strong> While the agent works, it writes short storyboards of what the pet should be doing and sends them to a real-time video worker on RunPod (2× H100), which publishes live video of the pet back into the same room. The wallpaper swaps from the idle loops to that live stream.</li>
+      <li><strong>Live previews.</strong> A document streams into a preview window as it is written; a spreadsheet appears tab by tab — source, cleaning, tables, chart — as each step is computed with exact decimals, then is saved as an <code>.xlsx</code> with native charts.</li>
+    </ul>
+    <ul data-i18n-lang="zh" hidden>
+      <li><strong>初始化。</strong>一张宠物照片依次经过照片校验（Muse Spark）、白天与夜晚两版肖像生成（Muse Image），以及十段短的待机循环动画（Gemini Omni Flash）；宠物空闲时，这些动画就作为桌面壁纸播放。</li>
+      <li><strong>工作循环。</strong>每个任务都有独立的 LiveKit 房间和一个 LiveKit Agents 任务，运行带网页搜索与函数工具的 Muse Wonder 循环。桌面文件工具通过 RPC 在 Electron 主进程中执行，仅限访问桌面与下载文件夹，危险操作需要用户确认。</li>
+      <li><strong>宠物实时演绎。</strong>智能体工作时，会为宠物写出简短的分镜，发送给运行在 RunPod（2× H100）上的实时视频工作进程，由它把宠物的实时视频发布回同一个房间，壁纸随即从待机循环切换为这段直播画面。</li>
+      <li><strong>实时预览。</strong>文档在撰写过程中实时流入预览窗口；表格则随着每一步以精确小数计算，按标签页逐个呈现 — 原始数据、清洗、汇总表、图表 — 最终保存为带原生图表的 <code>.xlsx</code>。</li>
+    </ul>
+
+    <figure class="diagram-figure">
+      <svg viewBox="0 0 640 300" role="img"
+           data-i18n-attr="aria-label"
+           data-en-aria-label="The Electron desktop app talks to a FastAPI api, which creates a LiveKit room per task, dispatches a LiveKit Agents worker running the Muse Wonder loop, and submits a job to a RunPod pet video worker; the agent calls desktop tools over RPC and sends storyboards to the worker, which streams live pet video back to the desktop wallpaper."
+           data-zh-aria-label="Electron 桌面应用与 FastAPI 接口服务通信；接口服务为每个任务创建 LiveKit 房间，分发运行 Muse Wonder 循环的 LiveKit Agents 工作进程，并向 RunPod 宠物视频工作进程提交任务；智能体通过 RPC 调用桌面工具，并把分镜发送给视频工作进程，后者将宠物实时视频流回桌面壁纸。"
+           aria-label="The Electron desktop app talks to a FastAPI api, which creates a LiveKit room per task, dispatches a LiveKit Agents worker running the Muse Wonder loop, and submits a job to a RunPod pet video worker; the agent calls desktop tools over RPC and sends storyboards to the worker, which streams live pet video back to the desktop wallpaper.">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor" opacity=".6"/>
+          </marker>
+          <marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <!-- desktop -->
+        <rect class="box accent" x="170" y="10" width="300" height="56" rx="8"/>
+        <text x="320" y="34" text-anchor="middle" font-size="13" font-weight="600">Electron desktop app (macOS)</text>
+        <text x="320" y="53" text-anchor="middle" font-size="11" opacity=".8">wallpaper · input bar · previews · file tools</text>
+
+        <!-- desktop -> api -->
+        <line class="flow-line" x1="230" y1="66" x2="140" y2="118" marker-end="url(#arrow)"/>
+        <text class="label" x="110" y="92" font-size="11">HTTPS</text>
+
+        <!-- api -->
+        <rect class="box" x="20" y="120" width="220" height="70" rx="8"/>
+        <text x="130" y="146" text-anchor="middle" font-size="13" font-weight="600">api (FastAPI)</text>
+        <text x="130" y="166" text-anchor="middle" font-size="11" opacity=".8">pets · tasks · rooms</text>
+        <text x="130" y="181" text-anchor="middle" font-size="11" opacity=".8">recovery sweeper</text>
+
+        <!-- agent -->
+        <rect class="box" x="400" y="120" width="220" height="70" rx="8"/>
+        <text x="510" y="146" text-anchor="middle" font-size="13" font-weight="600">agent (LiveKit Agents)</text>
+        <text x="510" y="166" text-anchor="middle" font-size="11" opacity=".8">Muse Wonder work loop</text>
+        <text x="510" y="181" text-anchor="middle" font-size="11" opacity=".8">storyboards for the pet</text>
+
+        <!-- api -> agent -->
+        <line class="flow-line" x1="240" y1="155" x2="398" y2="155" marker-end="url(#arrow)"/>
+        <text class="label" x="276" y="148" text-anchor="middle" font-size="11">dispatch</text>
+
+        <!-- agent <-> desktop RPC -->
+        <line class="flow-line" x1="470" y1="118" x2="410" y2="68" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+        <text class="label" x="470" y="92" font-size="11">RPC · streams</text>
+
+        <!-- worker -->
+        <rect class="box accent" x="210" y="226" width="220" height="62" rx="8"/>
+        <text x="320" y="252" text-anchor="middle" font-size="13" font-weight="600">pet video worker</text>
+        <text x="320" y="271" text-anchor="middle" font-size="11" opacity=".8">RunPod Serverless · 2× H100</text>
+
+        <!-- api -> worker -->
+        <line class="flow-line" x1="130" y1="190" x2="226" y2="232" marker-end="url(#arrow)"/>
+        <text class="label" x="118" y="222" font-size="11">submit job</text>
+
+        <!-- agent -> worker -->
+        <line class="flow-line" x1="510" y1="190" x2="414" y2="232" marker-end="url(#arrow)"/>
+        <text class="label" x="478" y="222" font-size="11">pet: storyboard</text>
+
+        <!-- worker -> desktop (live video) -->
+        <path class="flow-line accent" d="M320,226 L320,70" marker-end="url(#arrow-accent)"/>
+        <text x="328" y="105" font-size="10" font-weight="600">live video</text>
+      </svg>
+      <figcaption>
+        <span data-i18n-lang="en">One LiveKit room per task: the agent does the work and drives the desktop over RPC, while the video worker streams the pet acting it out straight onto the wallpaper.</span>
+        <span data-i18n-lang="zh" hidden>每个任务一个 LiveKit 房间：智能体负责干活，并通过 RPC 操作桌面；视频工作进程则把宠物演绎工作的画面直接推流到桌面壁纸上。</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section id="notes">
+    <h2><span data-i18n-lang="en">Engineering notes</span><span data-i18n-lang="zh" hidden>工程要点</span></h2>
+    <p data-i18n-lang="en"><strong>Supabase as the single source of truth.</strong> Every state change is a conditional update, and a recovery sweeper runs every 15 s, so several api instances can run safely and a task survives restarts of the api or agent. Worker submissions are numbered so a late-joining older worker is removed from the room instead of fighting the current one.</p>
+    <p data-i18n-lang="zh" hidden><strong>以 Supabase 作为唯一数据源。</strong>所有状态变更都是条件更新，再加上一个每 15 秒运行一次的恢复清扫器，因此可以安全地运行多个 api 实例，任务也能扛过 api 或 agent 的重启。视频工作进程的每次提交都有编号，迟到加入的旧工作进程会被移出房间，而不会与当前的工作进程互相争抢。</p>
+    <p data-i18n-lang="en"><strong>Safe local tools.</strong> File operations are validated against real paths (Desktop and Downloads only), risky actions need confirmation, and every side-effecting call is recorded in a local operation log so an interrupted task can be recovered.</p>
+    <p data-i18n-lang="zh" hidden><strong>安全的本地工具。</strong>文件操作会基于真实路径进行校验（仅限桌面与下载文件夹），危险操作需要确认，每一次带副作用的调用都会写入本地操作日志，以便恢复被中断的任务。</p>
+    <p data-i18n-lang="en"><strong>Testable without a GPU.</strong> A fake video worker follows the same LiveKit protocol as the real one, and the scheduling logic is pure Python, so the agent's scene controller and closing sequence are unit-tested without a room or a GPU.</p>
+    <p data-i18n-lang="zh" hidden><strong>无需 GPU 即可测试。</strong>一个假的视频工作进程遵循与真实进程相同的 LiveKit 协议，调度逻辑则是纯 Python 实现，因此智能体的场景控制器与收尾流程无需房间或 GPU 就能做单元测试。</p>
+  </section>
+
+  <section id="stack">
+    <h2><span data-i18n-lang="en">Stack</span><span data-i18n-lang="zh" hidden>技术栈</span></h2>
+    <p class="stack-row"><b><span data-i18n-lang="en">Desktop</span><span data-i18n-lang="zh" hidden>桌面端</span></b> — Electron, React, TypeScript, LiveKit JS SDK</p>
+    <p class="stack-row"><b><span data-i18n-lang="en">Backend</span><span data-i18n-lang="zh" hidden>后端</span></b> — Python, FastAPI, LiveKit Agents, Supabase (Postgres + Storage), Railway</p>
+    <p class="stack-row"><b><span data-i18n-lang="en">AI services</span><span data-i18n-lang="zh" hidden>AI 服务</span></b> — Meta Model API (Muse Wonder, Muse Spark, Muse Image, Muse Voice Transcribe), Google Gemini Omni Flash</p>
+    <p class="stack-row"><b><span data-i18n-lang="en">GPU infra</span><span data-i18n-lang="zh" hidden>GPU 基础设施</span></b> — RunPod Serverless (2× H100) real-time pet video worker</p>
+  </section>
+
+  <a class="back-link" href="../index.html">
+    <span data-i18n-lang="en">← All projects</span>
+    <span data-i18n-lang="zh" hidden>← 返回全部项目</span>
+  </a>
+
+  <footer>
+    Qing Li · <a href="https://nythelabs.com">nythelabs.com</a> · <a href="https://github.com/nythe-labs">GitHub</a>
+  </footer>
+
+</div>
+<script src="../assets/i18n.js"></script>
+</body>
+</html>
